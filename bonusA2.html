@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Calculator 2</title>
+    <style>
+        table {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: right;
+        }
+        .tb1 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Investment Calculator</h2>
+    <!-- Input fields -->
+    <div class="tb1"><label>Initial Investment: <input type="number" id="initial_value" value="1000"></label></div>
+    <!-- <label>: Provides a descriptive label for the input field./
+        <input type="number" id="initial" value="1000">: Creates a number input field./
+        type="number": Ensures only numeric input./
+        id="initial": Assigns an ID to reference it in JavaScript./
+        value="1000": Sets the default value to 1000. -->
+    <div class="tb1"><label>Monthly Contribution: <input type="number" id="monthly_contribution" value="50"></label></div>
+    <div class="tb1"><label>Duration in Years: <input type="number" id="years" value="5"></label></div>
+    <div class="tb1"><label>Interest Rate (%): <input type="number" id="rate" value="5"></label></div>
+    <div class="tb1"><button onclick="calculate()">Calculate</button></div><!-- Button triggers calculation/
+    <button>: Defines a clickable button.
+    onclick="calculate()": Sets an event that triggers the calculate() function when the button is clicked.
+    "Calculate": The text displayed on the button.-->
+
+    <!-- Result table -->
+    <table>
+
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th id="rate_header">Investment Value(%)</th>
+                <th>Total Contributions</th>
+            </tr>
+        </thead>
+        <tbody id="table_data"></tbody>
+    </table>
+
+    <script>
+        function calculate() {
+            // Get input values from HTML elements
+            const initial_amount = parseFloat(document.getElementById("initial_value").value);
+            //Finds the HTML input element with the id="initial".
+            // .value -Retrieves the value entered in the input field as a string.
+            // parseFloat -Converts the string value into a floating-point number (decimal).
+            const monthly_contribution= parseFloat(document.getElementById("monthly_contribution").value);
+            const years = parseInt(document.getElementById("years").value);
+            const rate = parseFloat(document.getElementById("rate").value) / 100; // Convert % to decimal
+            const table_data = document.getElementById("table_data");
+            const rate_header = parseFloat(document.getElementById("rate").value).toFixed(2); // rate for table header
+            const rate_header_element = document.getElementById("rate_header");
+            // Reset table content
+            table_data.innerHTML = "";//clears the content of the tbody element (which has the ID results) before adding new rows.
+            rate_header_element.innerHTML = `Investment Value(${rate_header}%)`;//Updates the table header to display the interest rate.
+            // Initialize starting values
+            let total_amount = initial_amount; // Total contributions without interest
+            let current_amount = initial_amount; // Current value with interest
+
+            // Loop through each year (including year 0)
+            for (let i = 0; i <= years; i++) {
+                // Create table row as a string
+                let row = `<tr>
+                    <td>Year ${i}</td>
+                    <td>${current_amount.toFixed(2)}</td>
+                    <td>${total_amount.toFixed(2)}</td>`;
+            
+                if (i < years) {
+                    let yearly_Contribution = monthly_contribution * 12; // Yearly contribution amount
+                    total_amount = total_amount + yearly_Contribution; // Add to total contributions
+                    current_amount = current_amount + yearly_Contribution; // Add contribution before interest
+                    current_amount = current_amount * (1 + rate); // Apply annual interest
+                }
+                
+                // Add row to table
+                table_data.innerHTML = table_data.innerHTML + row;
+
+            }
+        }
+    </script>
+</body>
+
+</html>
